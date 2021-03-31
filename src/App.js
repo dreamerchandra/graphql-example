@@ -1,19 +1,15 @@
 import React from 'react';
 import './App.css';
-import fetchGraphQL from './fetchGraphQL';
 import graphql from 'babel-plugin-relay/macro';
 import {
-  RelayEnvironmentProvider,
   loadQuery,
   usePreloadedQuery,
 } from 'react-relay/hooks';
 import RelayEnvironment from './RelayEnvironment';
+import List from './List'
 
-const { Suspense } = React;
-
-// Define a query
-const RepositoryNameQuery = graphql`
-  query AppQuery {
+const BackEndNameQuery = graphql`
+  query AppBackEndQuery {
     backEnd {
       id
       name
@@ -29,44 +25,37 @@ const RepositoryNameQuery = graphql`
   }
 `;
 
-// Immediately load the query as our app starts. For a real app, we'd move this
-// into our routing configuration, preloading data as we transition to new routes.
-const preloadedQuery = loadQuery(RelayEnvironment, RepositoryNameQuery, {
-  /* query variables */
-});
+const FrontEndNameQuery = graphql`
+  query AppFrontEndQuery {
+    frontEnd {
+      id
+      name
+      skills{
+        edges {
+          node {
+            id
+            name
+          }
+        }
+      }
+    } 
+  }
+`;
 
-// Inner component that reads the preloaded query results via `usePreloadedQuery()`.
-// This works as follows:
-// - If the query has completed, it returns the results of the query.
-// - If the query is still pending, it "suspends" (indicates to React is isn't
-//   ready to render yet). This will show the nearest <Suspense> fallback.
-// - If the query failed, it throws the failure error. For simplicity we aren't
-//   handling the failure case here.
-function App(props) {
-  const data = usePreloadedQuery(RepositoryNameQuery, props.preloadedQuery);
+const backEndPrefetcher = loadQuery(RelayEnvironment, BackEndNameQuery);
+const frontEndPreFetcher = loadQuery(RelayEnvironment, FrontEndNameQuery);
 
+function App() {
+  const backEndSnap = usePreloadedQuery(BackEndNameQuery, backEndPrefetcher);
+  const backEndSkills = backEndSnap.backEnd ? backEndSnap.backEnd.skills.edges : []
+  const frontEndSnap = usePreloadedQuery(FrontEndNameQuery, frontEndPreFetcher);
+  const frontEndSkills = frontEndSnap.frontEnd ? frontEndSnap.frontEnd.skills.edges : []
   return (
     <div className="App">
-      <header className="App-header">
-        <p>{JSON.stringify(data)}</p>
-      </header>
+      <List items={backEndSkills} onNewItem={(newVal) => console.log(newVal)}/>
+      <List items={frontEndSkills} onNewItem={(newVal) => console.log(newVal)}/>
     </div>
   );
 }
 
-// The above component needs to know how to access the Relay environment, and we
-// need to specify a fallback in case it suspends:
-// - <RelayEnvironmentProvider> tells child components how to talk to the current
-//   Relay Environment instance
-// - <Suspense> specifies a fallback in case a child suspends.
-function AppRoot(props) {
-  return (
-    <RelayEnvironmentProvider environment={RelayEnvironment}>
-      <Suspense fallback={'Loading...'}>
-        <App preloadedQuery={preloadedQuery} />
-      </Suspense>
-    </RelayEnvironmentProvider>
-  );
-}
-
-export default AppRoot;
+export default App;

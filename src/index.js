@@ -1,22 +1,19 @@
-// import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import React from 'react';
+import React, { Suspense } from 'react';
 import './App.css';
-// import fetchGraphQL from './fetchGraphQL';
-import graphql from 'babel-plugin-relay/macro';
-import {
-  RelayEnvironmentProvider,
-} from 'react-relay/hooks';
 import RelayEnvironment from './RelayEnvironment';
+import { RelayEnvironmentProvider } from 'react-relay';
 
 const Root = () => (
   <React.StrictMode>
-    {/* <RelayEnvironmentProvider environment={RelayEnvironment}> */}
-      <App />
-    {/* </RelayEnvironmentProvider> */}
+    <RelayEnvironmentProvider environment={RelayEnvironment}>
+      <Suspense fallback={'Loading...'}>
+        <App />
+      </Suspense>
+    </RelayEnvironmentProvider>
   </React.StrictMode>
 );
 
