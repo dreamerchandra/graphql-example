@@ -1,3 +1,4 @@
+// import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
@@ -6,13 +7,12 @@ import React, { Suspense } from 'react';
 import './App.css';
 import RelayEnvironment from './RelayEnvironment';
 import { RelayEnvironmentProvider } from 'react-relay';
+import GraphqlProvider from "./GraphqlProvider";
 
 const Root = () => (
   <React.StrictMode>
     <RelayEnvironmentProvider environment={RelayEnvironment}>
-      <Suspense fallback={'Loading...'}>
-        <App />
-      </Suspense>
+      <GraphqlProvider />
     </RelayEnvironmentProvider>
   </React.StrictMode>
 );
