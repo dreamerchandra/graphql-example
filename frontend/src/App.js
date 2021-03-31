@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import './App.css';
 import graphql from 'babel-plugin-relay/macro';
 import {
   loadQuery,
   usePreloadedQuery,
-  useMutation
+  useMutation,
+  useQueryLoader
 } from 'react-relay/hooks';
 import RelayEnvironment from './RelayEnvironment';
 import List from './List'
+const AppBackEndQuery = require('./__generated__/AppBackEndQuery.graphql');
+const AppFrontEndQuery = require('./__generated__/AppFrontEndQuery.graphql');
 
 const BackEndNameQuery = graphql`
   query AppBackEndQuery {
@@ -49,15 +52,15 @@ const frontEndPreFetcher = loadQuery(RelayEnvironment, FrontEndNameQuery);
 const FRONT_END_APP_ID = "1";
 const BACK_END_APP_ID = "2";
 
-function App() {
-  const backEndSnap = usePreloadedQuery(BackEndNameQuery, backEndPrefetcher);
+function App({ frontEnd, backEnd }) {
+  const backEndSnap = usePreloadedQuery(BackEndNameQuery, backEnd.ref);
   const backEndSkills = backEndSnap.backEnd ? backEndSnap.backEnd.skills.edges : []
   
-  const frontEndSnap = usePreloadedQuery(FrontEndNameQuery, frontEndPreFetcher);
+  const frontEndSnap = usePreloadedQuery(FrontEndNameQuery, frontEnd.ref);
   const frontEndSkills = frontEndSnap.frontEnd ? frontEndSnap.frontEnd.skills.edges : []
 
   const [commit, isInFlight] = useMutation(graphql`
-    mutation AppFrontEndMutation($input: IntroduceSkillInput!) {
+    mutation AppSkillMutation($input: IntroduceSkillInput!) {
       introduceSkill(input: $input) {
         skill {
           name
@@ -66,6 +69,12 @@ function App() {
       }
     }
   `);
+  React.useEffect(() => {
+    if(!isInFlight){
+      frontEnd.fetch()
+      backEnd.fetch()
+    }
+  }, [isInFlight])
   return (
     <div className="App">
       <List items={backEndSkills} onNewItem={(skillName) => commit({
@@ -88,4 +97,37 @@ function App() {
   );
 }
 
-export default App;
+
+
+function AppWrapper(){
+  const [frontEndRef, loadQueryFrontEnd] = useQueryLoader(
+    AppFrontEndQuery,
+    frontEndPreFetcher
+  );
+  const [backEndRef, loadQueryBackEnd] = useQueryLoader(
+    AppBackEndQuery,
+    backEndPrefetcher
+  );
+  const refreshFrontEnd = (variables) => {
+    loadQueryFrontEnd(variables, {fetchPolicy: 'network-only'});
+  };
+  const refreshBackEnd = (variables) => {
+    loadQueryBackEnd(variables, {fetchPolicy: 'network-only'});
+  };
+  return (
+    <React.Suspense fallback="Loading query...">
+      <App
+        frontEnd={{
+          ref: frontEndRef,
+          fetch: refreshFrontEnd
+        }}
+        backEnd={{
+          ref: backEndRef,
+          fetch: refreshBackEnd
+        }}
+      />
+    </React.Suspense>
+  )
+}
+
+export default AppWrapper;
