@@ -48,7 +48,7 @@ function App(props: Props): React$Element<any> {
     <div className="skill-wrapper">
       <div className="skill-card-wrapper">
         <h1>Back End</h1>
-        <List items={backEndSkills} onNewItem={(skillName) => commit({
+        <List label="back end" items={backEndSkills} onNewItem={(skillName) => commit({
           variables: {
             input: {
               skillName,
@@ -59,7 +59,7 @@ function App(props: Props): React$Element<any> {
       </div>
       <div className="skill-card-wrapper">
         <h1>Front End</h1>
-        <List items={frontEndSkills} onNewItem={(skillName) => commit({
+        <List label="front end" items={frontEndSkills} onNewItem={(skillName) => commit({
           variables: {
             input: {
               skillName,

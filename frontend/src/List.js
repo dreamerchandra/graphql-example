@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AddSkill from './AddSkill';
 
-export default function List({ items, onNewItem }): React$Element<any> {
+export default function List({ items, onNewItem, label }): React$Element<any> {
     const [showModel, setShowModel] = useState(false)
     return (
         <>
@@ -13,10 +13,14 @@ export default function List({ items, onNewItem }): React$Element<any> {
                 }
 
             </div>
-            {showModel && <AddSkill show={showModel} onSubmit={(newSkill) => {
-                setShowModel(false)
-                onNewItem(newSkill)
-            }} />}
+            {showModel && <AddSkill
+                onClose={() => setShowModel(false)}
+                show={showModel}
+                label={label}
+                onSubmit={(newSkill) => {
+                    setShowModel(false)
+                    onNewItem(newSkill)
+                }} />}
         </>
     )
 }
