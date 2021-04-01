@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function AddSkill({ show, onSubmit }) {
+export default function AddSkill({ show, onSubmit }): React$Element<any> {
     const [value, setValue] = useState('')
     return (
         <div className="add-skill-wrapper">

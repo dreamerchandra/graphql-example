@@ -16,17 +16,17 @@ const GraphqlProvider = () => {
         AppFrontEndQuery,
         frontEndPreFetcher
     );
-    const refreshFrontEnd = (variables) => {
+    const refreshFrontEnd = React.useCallback((variables) => {
         loadQueryFrontEnd(variables, { fetchPolicy: 'network-only' });
-    };
+    }, [loadQueryFrontEnd]);
 
     const [backEndRef, loadQueryBackEnd] = useQueryLoader(
         AppBackEndQuery,
         backEndPrefetcher
     );
-    const refreshBackEnd = (variables) => {
+    const refreshBackEnd = React.useCallback((variables) => {
         loadQueryBackEnd(variables, { fetchPolicy: 'network-only' });
-    };
+    }, [loadQueryBackEnd]);
 
     return (
         <Suspense fallback={'Loading...'}>

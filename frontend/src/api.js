@@ -1,7 +1,7 @@
 
 import graphql from 'babel-plugin-relay/macro';
 
-const BackEndNameQuery = graphql`
+const BackEndNameQuery: graphql.GraphQLTaggedNode = graphql`
   query apiBackEndQuery {
     backEnd {
       id
@@ -18,7 +18,7 @@ const BackEndNameQuery = graphql`
   }
 `;
 
-const FrontEndNameQuery = graphql`
+const FrontEndNameQuery: graphql.GraphQLTaggedNode = graphql`
   query apiFrontEndQuery {
     frontEnd {
       id
@@ -35,7 +35,7 @@ const FrontEndNameQuery = graphql`
   }
 `;
 
-const ApiSkillMutation = graphql`
+const ApiSkillMutation: graphql.GraphQLTaggedNode = graphql`
     mutation apiSkillMutation($input: IntroduceSkillInput!) {
       introduceSkill(input: $input) {
         skill {

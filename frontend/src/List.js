@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AddSkill from './AddSkill';
 
-export default function List({ items, onNewItem }) {
+export default function List({ items, onNewItem }): React$Element<any> {
     const [showModel, setShowModel] = useState(false)
     return (
         <>
@@ -9,7 +9,7 @@ export default function List({ items, onNewItem }) {
                 setShowModel(true)
             }}>
                 {
-                    items.map((item) => <p>{item.node.name}</p>)
+                    items.map((item) => <p key={item.node.id}>{item.node.name}</p>)
                 }
 
             </div>

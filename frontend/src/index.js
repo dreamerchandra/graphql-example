@@ -1,9 +1,8 @@
 // import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import React, { Suspense } from 'react';
+import React from 'react';
 import './App.css';
 import RelayEnvironment from './RelayEnvironment';
 import { RelayEnvironmentProvider } from 'react-relay';
