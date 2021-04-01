@@ -1,3 +1,5 @@
+// @flow
+
 import React, { useState } from 'react'
 import Close from './close-button.png'
 export default function AddSkill({ show, onSubmit, onClose, label }): React$Element<any> {
